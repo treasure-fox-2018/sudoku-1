@@ -6,7 +6,24 @@ class Sudoku {
   solve() {}
 
   // Returns a string representing the current state of the board
-  board() {}
+  board() {
+      let board = [];
+      let i = 0;
+      for (i; i < board_string.length; i++) {
+          let boardRow = [];
+          for (let j = i; j < i+9; j++) {
+              if (board_string[j] === '0') {
+                  boardRow.push(' ');
+              } else {
+                  boardRow.push(board_string[j]);
+              }
+          }
+          board.push(boardRow);
+          i = i+8;
+      }
+
+      return board;
+  }
 }
 
 // The file has newlines at the end of each line,
