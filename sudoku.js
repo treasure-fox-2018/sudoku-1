@@ -17,7 +17,6 @@ class Sudoku {
         count++
       }
     }
-
     return this.board;
   }
 
@@ -34,11 +33,36 @@ class Sudoku {
         }
       }
     }
-    return board;
+    return this.board;
   }
 
   verticalCheck() {
+    let board = this.gameBoard()
+    let kolomUtama = []
+    let count = 0
 
+    for (let i = 0; i < board.length; i++) {
+      var kolom = []
+      for (let j = 0; j < 9; j++) {
+        kolom.push(board[j][i])
+      }
+      kolomUtama.push(kolom)
+    }
+    // console.log(kolomUtama)
+    
+
+    for (let i = 0; i < kolomUtama.length; i++) {
+      for (let j = 0; j < kolomUtama[i].length; j++) {
+        if (kolomUtama[i][j] === '0') {
+          for (let k = 0; k < this.angkaSudoku.length; k++) {
+            if (kolomUtama[i].includes(this.angkaSudoku[k]) === false) {
+              kolomUtama[i][j] = this.angkaSudoku[k]
+            }
+          }
+        }
+      }
+    }
+    return kolomUtama
   }
 
   boxCheck() {
@@ -57,4 +81,5 @@ let number = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 let gameSudoku = new Sudoku(board_string);
 let angkaSudoku = new Sudoku(number)
 
-console.log(gameSudoku.gameBoard());
+
+console.log(gameSudoku.horizonCheck())
