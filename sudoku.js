@@ -117,25 +117,37 @@ class Sudoku {
   }
 
   //function recursive for fill and check sudoku number
-  //log : 23:56 PM STILL ERROR HERE RETURN FALSE ISTEAD TRUE HUHUHU, kumpul wae lah
+  //log : 23:56 PM STILL ERROR HERE RETURN FALSE ISTEAD TRUE HUHUHU,SEND PULL REQUEST
+  //log : 00:32 AM FINALLYY FOUND THE BUG !!!!! FINAL COMMIT
+
+  //I use backtrack algorithm to solve this case
+  //first empty (0) index as the parent, and if we set a number (that not same as vertical/horizontal/inbox number) to it, 
+  //then next empty index will be its children, and next empty index again will be its children, Do it with recursive.
+  //if we set number in next empty index and the number is already exist in horizontal/vertical/inbox number, then we moved back to its parent
+  //and change the parent number value to +1 and do recursive again and again and again till DIE.
   solve() {
     let emptyIndex = this.checkEmptyIndex();
     let rowIndex = emptyIndex[0];
     let columnIndex = emptyIndex[1];
     // console.log(rowIndex,columnIndex);
     if (emptyIndex === "boardFull") {
+      // console.log("full didieu euy");
       return true;
     }
-    for (let number = 0 ; number < 9 ; number++ ) {
+    for (let number = 1 ; number <= 9 ; number++ ) {
+      // console.log('main for ',number)
       if (this.checkInAll(this.boardArr, rowIndex, columnIndex, number) === true) {
-        // console.log("didieu")
+        // console.log("didieu",rowIndex,columnIndex,number)
         //set boardArr current index to number value
         this.boardArr[rowIndex][columnIndex] = number;
+        // console.log(this.board());
+        // console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
         //do recursive to check next empty Index ,if the recursive return true, then stop this function by return true;
         if (this.solve() === true ) {
           return true;
         }
-        //if function this.solve return false set back current index number value to 0
+        //if function this.solve return false set back current index number value to 0, this is called backtrack algorithm if the target not found/false,
+        //then it will back to its parent which is in this case previous set index number, and try its neighbour which is number+1;
         this.boardArr[rowIndex][columnIndex] = 0;
       }
     }
@@ -181,8 +193,8 @@ var game = new Sudoku(board_string)
 // Remember: this will just fill out what it can and not "guess"
 // game.solve()
 console.log(game.board()) //print sudoku board 
-console.log(game.solve());
-// if (hasil === true ) {
-//   "yeay game is finished and we solved the SUDOKU game"
-// } else "Ups , we can not solved the game, please ask SODOKO, or MASAKO, or AJINOMOTO :("
+let run = game.solve();
+if (run === true ) {
+  console.log("yeay game is finished and we solved the SUNGOKU game, eh SUDOKU \nBelow is the solved board")
+} else console.log("Ups , we can not solved the game, please ask SODOKO, or MASAKO, or AJINOMOTO :(")
 console.log(game.board()) //print again board after sudoku solved
