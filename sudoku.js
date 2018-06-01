@@ -7,9 +7,10 @@
 // buat pengecekan per 3 x 3
 // solving -> game.solve()
 
-
 class Sudoku {
-  constructor(board_string) {}
+  constructor(board_string) {
+    this.isiBoard = board_string;
+  }
 
   cekBaris(no, boards, row) {
     for (let i = 0; i < 9; i++) {
@@ -42,8 +43,6 @@ class Sudoku {
     }
     return true;
   }
-
-
   // all checker result collected here
   collectCheck(boards, no, row, col) {
     return this.checkBox(boards, no, row, col) && this.cekBaris(no, boards, row) && this.cekKolom(no, boards, col)
@@ -69,13 +68,10 @@ class Sudoku {
       let I = empty[i][0]
       let J = empty[i][1]
       let numInput = board[I][J]
-
       while (!status && numInput <= 9) {
-
         if (this.collectCheck(board, numInput, I, J)) {
           status = true
           board[I][J] = numInput
-
         } else {
           numInput++
         }
@@ -89,7 +85,6 @@ class Sudoku {
     }
     return this.showBoards(board)
   }
-
 
 
   showBoards(board) {
@@ -109,7 +104,6 @@ class Sudoku {
         display3 += ("__________________");
       }
     }
-
     return display3
   }
 
@@ -122,29 +116,15 @@ class Sudoku {
     for (let i = 1; i <= 9; i++) {
       board1 = [];
       for (let j = 1; j <= 9; j++) {
-        board1.push(Number(board_string[no]));
+        board1.push(Number(this.isiBoard[no]));
         no++
       }
       board2.push(board1);
     }
     return board2;
   }
-
-
-
-
-  sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds) {
-        break;
-      }
-    }
-  }
-
-
-
 }
+
 
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
@@ -157,7 +137,7 @@ var game = new Sudoku(board_string);
 console.log('\n BEFORE: ')
 console.log(game.board())
 // Remember: this will just fill out what it can and not "guess"
-game.solve();
+
 console.log('\n AFTER: ')
 console.log(game.solve())
 console.log('\n ')
