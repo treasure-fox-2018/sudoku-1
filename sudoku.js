@@ -30,8 +30,28 @@ class Sudoku {
     return row;
   }
 
-  checkRow() {
-    
+  arrBoard() {
+    var rowArr = [];
+    for (let i = 0; i < board_string.length; i+=9) {
+      rowArr.push(game.line().splice(i,9))
+    }
+    return rowArr;
+  }
+
+  rowCheck() {
+    for (let i = 0; i < game.arrBoard().length; i++) {
+      var numbers = [1,2,3,4,5,6,7,8,9]
+      for (let j = 0; j < game.arrBoard()[i].length; j++) {
+        if (i === 0) {
+          for (let k = 0; k < numbers.length; k++) {
+            if (game.arrBoard()[i][j] === numbers[k]) {
+              numbers.splice(k,1)
+            }
+          }
+          return numbers
+        }
+      }
+    }
   }
 
 }
@@ -49,3 +69,5 @@ var game = new Sudoku(board_string)
 game.solve()
 
 console.log(game.board());
+console.log(game.arrBoard());
+console.log(game.rowCheck());
