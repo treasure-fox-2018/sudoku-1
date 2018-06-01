@@ -5,107 +5,84 @@ class Sudoku {
     this.board_string=board_string
   }
 
-  // Returns a string representing the current state of the board
-  board() {
-    var printBoard=[]
-    var index=0
-    for(let i=0; i<9; i++){
-      var smallBoard=[]
-      for(let j=0; j<9; j++){
-          smallBoard.push(Number(this.board_string[index]))
-          index++
-      }
-      printBoard.push(smallBoard)
-    }
-    return printBoard
-  }
-
-  checkPosisi(){
-    var checkPosisi= this.board()
-    for(let i=0; i<checkPosisi.length; i++){
-      for(let j=0; j<checkPosisi[i].length; j++){
-        if(checkPosisi[i][j] === 0){
-          var index =[i,j]
-          for(let x=1; x<=9; x++){
-            var count=0
-            // CHECK HORIZONTAL
-            if(checkPosisi[i].indexOf(x) === -1){
-              count+=1
-              // LOOPING VERTICAL
-              var checkValueVertical=0
-              var newIndex=[i,j]
-              for(let z=0; z < checkPosisi.length; z++){
-                if(checkPosisi[newIndex[0]][j] !== x){
-                  checkValueVertical+=1
-                }
-              }
-              if(checkValueVertical===9){
-                count+=1
-              }
-              //  CHECK SQUARE
-              var indexSquare=[i,j]
-              var checkValueSquare=0
-              if(indexSquare[0] < 3 && indexSquare[1] < 3){
-                for(let a=0; a < checkPosisi.length-6; a++){
-                  for (let u=0; u < checkPosisi[a].length-6; u++){
-                    indexSquare[0]=a
-                    indexSquare[1]=u
-                    if(checkPosisi[indexSquare[0]][indexSquare[1]] !== x){
-                      checkValueSquare+=1
-                    }
-                  }
-                }
-                if(checkValueSquare===9){
-                  count+=1
-                }
-              }
-
-              else if(indexSquare[0] < 6 && indexSquare[1] < 6){
-                for(let a=3; a < checkPosisi.length-3; a++){
-                  for (let u=3; u<  checkPosisi[a].length-3; u++){
-                    indexSquare[0]=a
-                    indexSquare[1]=u
-                    if(checkPosisi[indexSquare[0]][indexSquare[1]] !== x){
-                      checkValueSquare+=1
-                    }
-                  }
-                }
-                if(checkValueSquare===9){
-                  count+=1
-                }
-              }
-
-              else if(indexSquare[0] < 9 && indexSquare[1] < 9){
-                for(let a=6; a<checkPosisi.length; a++){
-                  for (let u=6; u<checkPosisi[a].length; u++){
-                    indexSquare[0]=a
-                    indexSquare[1]=u
-                    if(checkPosisi[indexSquare[0]][indexSquare[1]] !== x){
-                      checkValueSquare+=1
-                    }
-                  }
-                }
-                if(checkValueSquare===9){
-                  count+=1
-                }
-              }
+    board() {
+        var printBoard=[]
+        var index=0
+        for(let i=0; i<9; i++){
+        var smallBoard=[]
+            for(let j=0; j<9; j++){
+                smallBoard.push(Number(this.board_string[index]))
+                index++
             }
-            if (count === 3){
-              checkPosisi[i][j]=x 
-            }
-          }
+            printBoard.push(smallBoard)
         }
-      }
+        return printBoard
     }
-    return checkPosisi
-  } 
 
-  solve() {
-    var result = this.checkPosisi()
-    return result
-  }
+    checkCol(col, index, num){
+        let colBoard = [];
+        let arrCol = (pos, index) => pos.map(position => position[index])
+        colBoard = arrCol(col, index)
+        if (colBoard.indexOf(num) !== -1) {
+            return false
+        }
+        return true
+    }
+
+    checkRow(row, num){
+        if (row.indexOf(num) !== -1) {
+            return false
+        }
+        return true
+    }
+
+    checkSquare(board, positionX, positionY, num){ //check square3x3
+        let currentX = Math.floor(positionX / 3) * 3
+        let currentY = Math.floor(positionY / 3) * 3
+        for (let i = currentX; i < currentX+3; i++){
+            for (let j = currentY; j < currentY+3; j++){
+                if (board[i][j] === num){
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    solve(board){
+        var start = 1
+        var end = 9
+        var backTrack = []
+        for (let i = 0; i < board.length; i++){
+            for (let j = 0; j < board[i].length; j++){
+                var isUnique = false
+                if (board[i][j] === 0){
+                    for (let x = start; x <= end; x++) {
+                        if (this.checkRow(board[i], x)
+                            && this.checkCol(board, j, x)
+                            && this.checkSquare(board, i, j, x)){
+                                board[i][j] = x
+                                backTrack.push([i,j]) // bntuk jd nested array
+                                isUnique = true
+                                start = 1
+                                break
+                        }
+                    }
+
+                    if (isUnique === false){
+                        var endCoor = backTrack.slice(-1)[0] // ambil arr backtrack yg pling akhir
+                        backTrack.splice(backTrack.length-1) // ambil all array backtrack kecuali yg pling trakhir 
+                        start = board[endCoor[0]][endCoor[1]] + 1 // start dimulai dari hasil index coordinator trakhir plus 1
+                        i = endCoor[0]
+                        j = endCoor[1] - 1
+                        board[endCoor[0]][endCoor[1]] = 0
+                    }
+                }
+            }
+        }
+        return board
+    }
 }
-
 
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
@@ -119,8 +96,7 @@ var game = new Sudoku(board_string)
 game.board()
 console.log("Before:")
 console.log(game.board())
-console.log("")
+console.log("============================")
 
 console.log("After:")
-game.solve()
-console.log(game.solve())
+console.log(game.solve(game.board()))
