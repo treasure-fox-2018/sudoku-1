@@ -7,20 +7,20 @@ class Sudoku {
   }
 
   checkRows() {
-    var selectedRow = game.board()[2]
-    var angkaUnik = selectedRow.slice(0)
+    var selectedRow = game.board()[0]
+    var selectRow = selectedRow.slice(0)
     var selectionRow = []
     var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-    for (let i = 0; i < angkaUnik.length; i++) {
+    for (let i = 0; i < selectRow.length; i++) {
       var state = true
-      if (angkaUnik[i] !== '0') {
-        selectionRow.push(angkaUnik[i])
+      if (selectRow[i] !== '0') {
+        selectionRow.push(selectRow[i])
         // debugger;
       } else {
         while (state) {
           // debugger;
           for (var j = 0; j < number.length; j++) {
-            var idxNumAngka = angkaUnik.indexOf(number[j])
+            var idxNumAngka = selectRow.indexOf(number[j])
             var idxNumSelection = selectionRow.indexOf(number[j])
             // debugger;
             if (idxNumAngka === -1 && idxNumSelection === -1) {
@@ -34,8 +34,8 @@ class Sudoku {
       }
     }
     // console.log('number', number)
-    // console.log('index: ', angkaUnik)
-    // console.log('select', selectionRow)
+    console.log('index: ', selectRow)
+    console.log('select', selectionRow)
   }
 
   checkCols () {
@@ -69,20 +69,52 @@ class Sudoku {
         }
       }
     }
-    console.log('number', number)
+    // console.log('number', number)
     console.log('index: ', selectedCols)
     console.log('select', selectionCols)
   }
 
+  checkSquare () {
+    var mainBoard = game.board()
+    var selectedSquare = []
+    for(let i = 0; i < 3; i++) {
+      debugger
+      for(let j = 0; j < 3; j++) {
+        debugger
+        selectedSquare.push(mainBoard[i][j])
+      }
+    }
+    // console.log('this colomn: ', selectedCols)
+    var selectionSquare = []
+    var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    for (let i = 0; i < selectedSquare.length; i++) {
+      var state = true
+      if (selectedSquare[i] !== '0') {
+        selectionSquare.push(selectedSquare[i])
+        // debugger;
+      } else {
+        while (state) {
+          // debugger;
+          for (var j = 0; j < number.length; j++) {
+            var idxNumAngka = selectedSquare.indexOf(number[j])
+            var idxNumSelection = selectionSquare.indexOf(number[j])
+            // debugger;
+            if (idxNumAngka === -1 && idxNumSelection === -1) {
+              state = false
+              selectionSquare.push(number[j])
+              var j = number.length
+              // debugger;
+            }
+          }
+        }
+      }
+    }
+    console.log(selectedSquare);
+    console.log(selectionSquare);
+  }
+
   solve() {
-    // var sudokuBoard = this.board(this.rows, this.cols) // kalo mau manggil methode board pake this, OK!
-    // for (let i = 0; i < sudokuBoard.length; i++) {
-    //   for (let j = 0; j <sudokuBoard[i].length; j++) {
-    //     this.check(i, j)
-    //     }
-    //   }
-    // }
-    // return sudokuBoard
+    // var 
   }
 
   // Returns a string representing the current state of the board
@@ -118,9 +150,6 @@ game.solve()
 console.log(board_string);
 console.log('ini board:' + '\n', game.board());
 // console.log('ini solve:' + '\n', game.solve());
-// console.log('ini check: ' + '\n', game.checkRows()); completed
-console.log(game.checkCols());
-
-
-
-
+console.log('ini check rows: ' + '\n', game.checkRows());
+console.log('ini check columns: ' + '\n', game.checkCols());
+console.log('ini check square: ' + '\n', game.checkSquare());
