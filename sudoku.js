@@ -1,5 +1,9 @@
 "use strict"
 
+var board_string = process.argv;
+
+var board = [];
+
 class Sudoku {
     constructor(board_string) {
         this.strInput = board_string;
@@ -7,29 +11,8 @@ class Sudoku {
     }
 
     solve() {
-        let numbers = ['1','2','3','4','5','6','7','8','9'];
-
-        for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[i].length; j++) {
-                if (board[i][j] === ' ') {
-                    for (let k = 0; k < numbers.length; k++) {
-                        if (board[i].includes(numbers[k]) === false) {
-                            board[i][j] = numbers[k];
-                        }
-                    }
-                }
-            }
-         }
-
+        fillBlank();
         return board;
-    }
-
-    checkColumn(board, row, col, num) {
-
-    }
-
-    checkRow(board, row, col, num) {
-
     }
 
     // checkBox(board, pos, col) { }
@@ -54,6 +37,97 @@ class Sudoku {
     }
 }
 
+function fillBlank() {
+    let numbers = ['1','2','3','4','5','6','7','8','9'];
+
+    for (let i = 0; i < board.length; i++) {
+        // console.log('----- ROW KE : '+i);
+        for (let j = 0; j < board[i].length; j++) {
+            // create array column down
+            // console.log(j);
+            if (board[i][j] === ' ') {
+                let arrColumn = createArrayColumnDown(j);
+                for (let k = 0; k < numbers.length; k++) {
+                    if (checkBox(i, j, numbers[k]) === false && board[i].includes(numbers[k]) === false && arrColumn.includes(numbers[k]) === false) {
+                        // console.log('board before :'+board[i]+' num input'+numbers[k]);
+                        // console.log('column  down: '+arrColumn);
+                        board[i][j] = numbers[k];
+                        // console.log('board after : '+board[i]);
+                        k = numbers.length;
+                    }
+                }
+            }
+        }
+     }
+}
+
+function checkBox(row, col, num) {
+    let arrMiniBox;
+
+    if (row < 3 && col < 3) {
+        arrMiniBox = createMiniBox(3,3);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 3 && col < 6) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 3 && col < 9) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 6 && col < 3) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 6 && col < 6) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 6 && col < 9) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 9 && col < 3) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 9 && col < 6) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    } else if (row < 9 && col < 9) {
+        arrMiniBox = createMiniBox(3,6);
+        return checkDuplicates(arrMiniBox, num);
+    }
+}
+
+function createMiniBox(row, col) {
+    let miniBox = [];
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            miniBox.push(board[i][j]);
+        }
+    }
+    return miniBox;
+}
+
+function checkDuplicates(arrBox, numberCheck) {
+    if (arrBox.includes(numberCheck) === true) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function createArrayColumnDown(col) {
+    let arrColumnDown = [];
+    // console.log(col);
+    for (let i = 0; i < board.length; i++) {
+        arrColumnDown.push(board[i][col]);
+    }
+
+    return arrColumnDown;
+}
+
+function checkMiniBox() {
+
+
+
+}
+
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
 // var fs = require('fs')
@@ -61,13 +135,11 @@ class Sudoku {
 //   .toString()
 //   .split("\n")[0]
 
-var board_string = process.argv;
-
-var board = [];
-
 var game = new Sudoku(board_string[2])
 
 console.log(game.board())
+
+console.log();
 
 // Remember: this will just fill out what it can and not "guess"
 console.log(game.solve());
