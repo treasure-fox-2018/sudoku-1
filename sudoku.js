@@ -7,28 +7,34 @@ class Sudoku {
   }
 
   checkRows() {
-    var selectedRow = game.board()[0]
+    var selectedRow = game.board()[2]
     var angkaUnik = selectedRow.slice(0)
     var selectionRow = []
     var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-    var state = true
     for (let i = 0; i < angkaUnik.length; i++) {
+      var state = true
       if (angkaUnik[i] !== '0') {
         selectionRow.push(angkaUnik[i])
-      } else if (angkaUnik[i] === '0'){
+        debugger;
+      } else {
         while (state) {
-          for (let j = 0; j < number.length; j++) {
+          debugger;
+          for (var j = 0; j < number.length; j++) {
             var index = angkaUnik.indexOf(number[j])
-            if (index === -1) {
+            var index2 = selectionRow.indexOf(number[j])
+            debugger;
+            if (index === -1 && index2 === -1) {
               state = false
               selectionRow.push(number[j])
+              var j = number.length
+              debugger;
             }
           }
         }
       }
     }
     console.log('number', number)
-    console.log('angkaU', angkaUnik)
+    console.log('index: ', angkaUnik)
     console.log('select', selectionRow)
   }
 
