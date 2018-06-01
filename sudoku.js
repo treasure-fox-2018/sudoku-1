@@ -96,16 +96,50 @@ class Sudoku {
     return true;
   }
 
+  //function to combine checking in all direction and inbox 3x3 check
+  //return true if there is no same number , return false if same number exist
+  checkInAll (board,row,column,value) {
+    if (this.checkHorizontal(board,row,column,value) === true && this.checkVertical(board,row,column,value) === true && this.checkInBox(board,row,column,value === true) ) {
+      return true;
+    } else return false;
+  }
 
+  //function to find first empty (0) value in board, and return the empty index wity type array contian row and column, if no empty index means that game is finish 
+  checkEmptyIndex () {
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0 ; j < 9 ; j++) {
+        if (this.boardArr[i][j] === 0) {
+          return [i,j]
+        }
+      }
+    }
+    return "boardFull";
+  }
+
+  //function recursive for fill and check sudoku number
+  //log : 23:56 PM STILL ERROR HERE RETURN FALSE ISTEAD TRUE HUHUHU, kumpul wae lah
   solve() {
-    //dummy solve function for checking function check horizontal,vertical, and box is running or not with below give value
-    let indexRow = 0;
-    let indexColumn = 1;
-    let valueSudoku = 4;
-    console.log(this.checkHorizontal(this.boardArr, indexRow, indexColumn, valueSudoku))
-    console.log(this.checkVertical(this.boardArr, indexRow, indexColumn, valueSudoku))
-    console.log(this.checkInBox(this.boardArr, indexRow, indexColumn, valueSudoku))
-    return "just test solve function";
+    let emptyIndex = this.checkEmptyIndex();
+    let rowIndex = emptyIndex[0];
+    let columnIndex = emptyIndex[1];
+    // console.log(rowIndex,columnIndex);
+    if (emptyIndex === "boardFull") {
+      return true;
+    }
+    for (let number = 0 ; number < 9 ; number++ ) {
+      if (this.checkInAll(this.boardArr, rowIndex, columnIndex, number) === true) {
+        // console.log("didieu")
+        //set boardArr current index to number value
+        this.boardArr[rowIndex][columnIndex] = number;
+        //do recursive to check next empty Index ,if the recursive return true, then stop this function by return true;
+        if (this.solve() === true ) {
+          return true;
+        }
+        //if function this.solve return false set back current index number value to 0
+        this.boardArr[rowIndex][columnIndex] = 0;
+      }
+    }
+    return false;
 
   }
 
@@ -147,4 +181,8 @@ var game = new Sudoku(board_string)
 // Remember: this will just fill out what it can and not "guess"
 // game.solve()
 console.log(game.board()) //print sudoku board 
-console.log(game.solve()) //run dummy sudoku solve method
+console.log(game.solve());
+// if (hasil === true ) {
+//   "yeay game is finished and we solved the SUDOKU game"
+// } else "Ups , we can not solved the game, please ask SODOKO, or MASAKO, or AJINOMOTO :("
+console.log(game.board()) //print again board after sudoku solved
