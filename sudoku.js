@@ -1,6 +1,4 @@
 "use strict"
-const rows = 9
-const cols = 9
 class Sudoku {
   constructor(board_string) {
     this.string = board_string
@@ -8,25 +6,41 @@ class Sudoku {
     this.cols = 9
   }
 
-  checkCol(numRow, numCol) {
-    // var boardSudoku = this.board()
-    var number = '123456789'
-    // console.log('row: '+ numRow, 'col: ' + numCol)
-    // if ()
-  }
-
-  solve() {
-    var sudokuBoard = this.board(rows, cols) // kalo mau manggil methode board pake this, OK!
-    for (let i = 0; i < sudokuBoard.length; i++) {
-      for (let j = 0; j <sudokuBoard[i].length; j++) {
-        if (sudokuBoard[i][j] === '0') {
-          // this.checkCol(i, j)
-          sudokuBoard[i][j] = '#'
-          // console.log('I: ' + i + 'J :' + j)
+  checkRows() {
+    var selectedRow = game.board()[0]
+    var angkaUnik = selectedRow.slice(0)
+    var selectionRow = []
+    var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    var state = true
+    for (let i = 0; i < angkaUnik.length; i++) {
+      if (angkaUnik[i] !== '0') {
+        selectionRow.push(angkaUnik[i])
+      } else if (angkaUnik[i] === '0'){
+        while (state) {
+          for (let j = 0; j < number.length; j++) {
+            var index = angkaUnik.indexOf(number[j])
+            if (index === -1) {
+              state = false
+              selectionRow.push(number[j])
+            }
+          }
         }
       }
     }
-    return sudokuBoard
+    console.log('number', number)
+    console.log('angkaU', angkaUnik)
+    console.log('select', selectionRow)
+  }
+
+  solve() {
+    // var sudokuBoard = this.board(this.rows, this.cols) // kalo mau manggil methode board pake this, OK!
+    // for (let i = 0; i < sudokuBoard.length; i++) {
+    //   for (let j = 0; j <sudokuBoard[i].length; j++) {
+    //     this.check(i, j)
+    //     }
+    //   }
+    // }
+    // return sudokuBoard
   }
 
   // Returns a string representing the current state of the board
@@ -61,8 +75,8 @@ game.solve()
 // console.log(game.board())
 console.log(board_string);
 console.log('ini board:' + '\n', game.board());
-console.log('ini solve:' + '\n', game.solve());
-console.log('ini solve:' + '\n', game.checkCol());
+// console.log('ini solve:' + '\n', game.solve());
+console.log('ini check: ' + '\n', game.checkRows());
 
 
 
