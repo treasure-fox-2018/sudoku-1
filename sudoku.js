@@ -15,27 +15,63 @@ class Sudoku {
       var state = true
       if (angkaUnik[i] !== '0') {
         selectionRow.push(angkaUnik[i])
-        debugger;
+        // debugger;
       } else {
         while (state) {
-          debugger;
+          // debugger;
           for (var j = 0; j < number.length; j++) {
-            var index = angkaUnik.indexOf(number[j])
-            var index2 = selectionRow.indexOf(number[j])
-            debugger;
-            if (index === -1 && index2 === -1) {
+            var idxNumAngka = angkaUnik.indexOf(number[j])
+            var idxNumSelection = selectionRow.indexOf(number[j])
+            // debugger;
+            if (idxNumAngka === -1 && idxNumSelection === -1) {
               state = false
               selectionRow.push(number[j])
               var j = number.length
-              debugger;
+              // debugger;
+            }
+          }
+        }
+      }
+    }
+    // console.log('number', number)
+    // console.log('index: ', angkaUnik)
+    // console.log('select', selectionRow)
+  }
+
+  checkCols () {
+    var mainBoard = game.board()
+    var selectedCols = []
+    for (let k = 0; k < mainBoard.length; k++) {
+      selectedCols.push(mainBoard[k][0])
+    }
+    // console.log('this colomn: ', selectedCols)
+    var selectionCols = []
+    var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    for (let i = 0; i < selectedCols.length; i++) {
+      var state = true
+      if (selectedCols[i] !== '0') {
+        selectionCols.push(selectedCols[i])
+        // debugger;
+      } else {
+        while (state) {
+          // debugger;
+          for (var j = 0; j < number.length; j++) {
+            var idxNumAngka = selectedCols.indexOf(number[j])
+            var idxNumSelection = selectionCols.indexOf(number[j])
+            // debugger;
+            if (idxNumAngka === -1 && idxNumSelection === -1) {
+              state = false
+              selectionCols.push(number[j])
+              var j = number.length
+              // debugger;
             }
           }
         }
       }
     }
     console.log('number', number)
-    console.log('index: ', angkaUnik)
-    console.log('select', selectionRow)
+    console.log('index: ', selectedCols)
+    console.log('select', selectionCols)
   }
 
   solve() {
@@ -82,7 +118,9 @@ game.solve()
 console.log(board_string);
 console.log('ini board:' + '\n', game.board());
 // console.log('ini solve:' + '\n', game.solve());
-console.log('ini check: ' + '\n', game.checkRows());
+// console.log('ini check: ' + '\n', game.checkRows()); completed
+console.log(game.checkCols());
+
 
 
 
