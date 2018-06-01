@@ -1,101 +1,60 @@
-"use strict"
+"use strict";
 
 class Sudoku {
-  constructor (board_string) {
-    this.string = board_string
-    // this.board = []
-    this.angkaSudoku = ['1', '2', '3', '4', '5', '7', '8', '9']
-    this.dummyBoard = []
+  constructor(board_string) {
+    this.string = board_string;
+    this.board = [];
+    this.angkaSudoku = number
   }
 
   gameBoard() {
-    let indexA = 0
-    let indexB = 9
-    let board = []
+    let count = 0
 
     for (let i = 0; i < 9; i++) {
-      board.push([])
-      for (let j = indexA; j < indexB; j++) {
-        board[i].push(this.string[j])
+      this.board.push([]);
+      for (let j = 0; j < 9; j++) {
+        this.board[i].push(this.string[count]);
+        count++
       }
-      indexA += 9
-      indexB += 9
     }
 
-
-    // this.checkSudoku()
-    return board
+    return this.board;
   }
 
-  checkSudoku() {
+  horizonCheck() {
+    let board = this.gameBoard();
     for (let i = 0; i < board.length; i++) {
       for (let j = 0; j < board[i].length; j++) {
-        
-        if (board[i][j] === 0) {
-          let vertical = this.verticalCheck(j)
-          let horizontal = this.horizontalCheck(i)
-        }
-
-      }
-    }
-    
-  }
-
-  verticalCheck(y) {
-    let numArr = []
-
-    for (let i = 0; i < this.angkaSudoku.length; i++) {
-      let count = 0
-      for (let j = 0; j < 9; j++) {
-        if (this.angkaSudoku[i] === this.board[i][y]) {
-          count++
+        if (board[i][j] === "0") {
+          for (let k = 0; k < this.angkaSudoku.length; k++) {
+            if (board[i].includes(this.angkaSudoku[k]) === false) {
+              board[i][j] = this.angkaSudoku[k];
+            }
+          }
         }
       }
-      if (count === 0) {
-        numArr.push(this.angkaSudoku[i])
-      }
     }
-    return numArr
+    return board;
   }
 
-  horizontalCheck(x) {
-    let numArr = []
-
-    for (let i = 0; i < this.angkaSudoku.length; i++) {
-      let count = 0
-      for (let j = 0; j < 9; j++) {
-        if (this.angkaSudoku[i] === this.board[x][j]) {
-          count++
-        }
-      }
-      if (count === 0) {
-        numArr.push(this.angkaSudoku[i])
-      }
-    }
-    return numArr
-  }
-
-  check3x3() {
+  verticalCheck() {
 
   }
+
+  boxCheck() {
+
+  }
+
 }
 
-const fs = require('fs')
-let board_string = fs.readFileSync('set-01_sample.unsolved.txt').toString().split('\n')[0];
+const fs = require("fs");
+let board_string = fs
+  .readFileSync("set-01_sample.unsolved.txt")
+  .toString()
+  .split("\n")[0];
+let number = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
-let gameSudoku = new Sudoku (board_string)
+let gameSudoku = new Sudoku(board_string);
+let angkaSudoku = new Sudoku(number)
 
-console.log(gameSudoku.checkSudoku())
-
-
-/*
-check horizontal
-[0][0]
-[1][0]
-[2][0]
-
-check vertical
-[0][0]
-[0][1]
-[0][2]
-*/
+console.log(gameSudoku.gameBoard());
