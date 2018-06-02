@@ -38,12 +38,13 @@ class Sudoku {
       // console.log(currentSolve);
       var element = increment(Number(currentSolve));
       if (element === false) {
-        element = String(Math.trunc(Math.random() * 9));
+        arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex] = "0";
+        counter --
       }
       var booleanConfirmedProcess = false;
-      console.log("element luar -> " + element);
+      // console.log("element luar -> " + element);
       while (element !== false && booleanConfirmedProcess !== true) {
-        console.log("counterLuar-> " + counter);
+        // console.log("counterLuar-> " + counter);
         var block = blockObtain(arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
         var booleanVertical = verticalChecker(element, arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
         var booleanHorizontal = horizontalChecker(element, arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
@@ -51,22 +52,46 @@ class Sudoku {
         if (booleanVertical && booleanHorizontal && booleanBlock) {
           arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex] = element;
           counter ++;
-          console.log("counterIF-> " + counter);
-          console.log(arr);
+          // console.log("counterIF-> " + counter);
+          // console.log("gantiIf");
+          // console.log(arr);
+          // sleep(1000)
+          // reset_board();
           booleanConfirmedProcess = true;
         } else {
           element = increment(Number(element));
-          console.log("element -> " + element);
+          // console.log("element -> " + element);
           if (element === false) {
             arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex] = "0";
+            // console.log("gantiElse");
+            // console.log(arr);
+            // sleep(1000)
+            // reset_board();
             counter --;
-            console.log("counterIF2-> " + counter);
+            // console.log("counterIF2-> " + counter);
           }
         }
       }
     }
+    return sudokoWrite(arr);
 
-    return arr;
+    function sudokoWrite(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if (i === 3 || i === 6) {
+          console.log("------------------------");
+        }
+        var horizontalContainer = " "
+        for (let k = 0; k < arr[i].length; k++) {
+          if (k === 2 || k === 5) {
+            horizontalContainer += arr[i][k] + " | "
+          } else {
+            horizontalContainer += "" + arr[i][k] + " "
+          }
+        }
+        console.log(horizontalContainer);
+      }
+      return "result Obtained";
+    }
 
     function getArrZero(arr) {
       var zeroArr = []
@@ -217,6 +242,19 @@ class Sudoku {
           return [arr[i - 1], (i - 1)]
         }
       }
+    }
+
+    function sleep(milliseconds) {
+      var start = new Date().getTime();
+      for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds) {
+          break;
+        }
+      }
+    }
+
+    function reset_board() {
+      console.log("\x1B[2J")
     }
 
   }
