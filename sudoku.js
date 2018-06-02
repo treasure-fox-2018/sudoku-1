@@ -9,35 +9,87 @@ class Sudoku {
     var strToArr = this.strBoard;
     var arrSudoku = [];
     var arrTempo = [];
-    for (let i = 0; i < strToArr.length; i++) {
+    for (let i = 0; i < 85; i++) {
       if (arrTempo.length === 9) {
         arrSudoku.push(arrTempo);
         arrTempo = [];
+        i--;
+      } else {
+        arrTempo.push(strToArr[i])
       }
-      arrTempo.push(strToArr[i])
     }
-    return arrSudoku;
+    this.arr = arrSudoku;
+    return this.arr;
   }
 
   solve() {
-    horizontalChecker(element, elementIndex, arrIndex, arr) {
-      for (let i = 0; i < arr[arrIndex].length; i++) {
-        if (i === elementIndex) {
-          i ++;
-        }
-        let inspector = arr[arrIndex][i];
-        // console.log(inspector);
-        if (inspector === element) {
-          return false;
+    var arr = this.arr;
+    var arrZero = getArrZero(arr);
+
+    // console.log(arrZero);
+    // console.log(arrZero.length);
+    // console.log(arrZero[30]);
+    // console.log(arr);
+    // console.log(arrZero);
+    // var limit = 0;
+    var counter = 0;
+    while (counter !== arrZero.length) {
+      var currentSolve = arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex];
+      // console.log(currentSolve);
+      var element = increment(Number(currentSolve));
+      if (element === false) {
+        element = String(Math.trunc(Math.random() * 9));
+      }
+      var booleanConfirmedProcess = false;
+      console.log("element luar -> " + element);
+      while (element !== false && booleanConfirmedProcess !== true) {
+        console.log("counterLuar-> " + counter);
+        var block = blockObtain(arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
+        var booleanVertical = verticalChecker(element, arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
+        var booleanHorizontal = horizontalChecker(element, arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr);
+        var booleanBlock = blockCheck(element, arrZero[counter].arrIndex, arrZero[counter].elementIndex, arr, block);
+        if (booleanVertical && booleanHorizontal && booleanBlock) {
+          arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex] = element;
+          counter ++;
+          console.log("counterIF-> " + counter);
+          console.log(arr);
+          booleanConfirmedProcess = true;
+        } else {
+          element = increment(Number(element));
+          console.log("element -> " + element);
+          if (element === false) {
+            arr[arrZero[counter].arrIndex][arrZero[counter].elementIndex] = "0";
+            counter --;
+            console.log("counterIF2-> " + counter);
+          }
         }
       }
-      return true;
     }
 
-    verticalChecker(element, elementIndex, arrIndex, arr) {
-      for (let i = 0; i < arr.length; i++) {
+    return arr;
+
+    function getArrZero(arr) {
+      var zeroArr = []
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          var objZeroPosition = {};
+          if (arr[i][j] === "0") {
+            objZeroPosition.arrIndex = i;
+            objZeroPosition.elementIndex = j;
+            zeroArr.push(objZeroPosition)
+          }
+        }
+      }
+      return zeroArr;
+    }
+
+    function verticalChecker(element, arrIndex, elementIndex, arr) {
+      for (let i = 0; i < 9; i++) {
         if (i === arrIndex) {
-          i ++;
+          i++;
+        }
+        if (i === 9) {
+          return true;
         }
         let inspector = arr[i][elementIndex];
         // console.log(inspector);
@@ -48,9 +100,25 @@ class Sudoku {
       return true;
     }
 
-    blockObtain(elementIndex, arrIndex, arr) {
-      var arrObjBlockPosiibilities = [
-        {
+    function horizontalChecker(element, arrIndex, elementIndex, arr) {
+      for (let i = 0; i < 9; i++) {
+        if (i === elementIndex) {
+          i++;
+        }
+        if (i === 9) {
+          return true;
+        }
+        let inspector = arr[arrIndex][i];
+        // console.log(inspector);
+        if (inspector === element) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function blockObtain(arrIndex, elementIndex, arr) {
+      var arrObjBlockPosiibilities = [{
           arrIndexs: [0, 1, 2],
           elementIndexs: [0, 1, 2]
         },
@@ -99,16 +167,16 @@ class Sudoku {
       }
     }
 
-    blockCheck(element, elementIndex, arrIndex, arr, block) {
+    function blockCheck(element, arrIndex, elementIndex, arr, block) {
       let strBlockElements = "";
       let blockElementIndexs = block.elementIndexs;
       let blockArrIndexs = block.arrIndexs;
 
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < blockElementIndexs.length; i++) {
         let currentArrIndex = blockArrIndexs[i];
-        for (let j = 0; j < 3; j++) {
+        for (let j = 0; j < blockArrIndexs.length; j++) {
           let currentElementIndex = blockElementIndexs[j]
-          if (currentArrIndex !== arrIndex && currentElementIndex !== elementIndex) {
+          if (currentArrIndex !== arrIndex || currentElementIndex !== elementIndex) {
             strBlockElements += arr[currentArrIndex][currentElementIndex]
           }
         }
@@ -122,7 +190,7 @@ class Sudoku {
       return true;
     }
 
-    linearSearch(target, values) {
+    function linearSearch(target, values) {
       for (var q = 0; q < values.length; q++) {
         if (values[q] === target) {
           return q;
@@ -130,8 +198,28 @@ class Sudoku {
       }
       return -1;
     }
-  }
 
+    function increment(value) {
+      let result = value + 1;
+      if (result === 10) {
+        return false;
+      }
+      return String(result);
+    }
+
+    function getNearestZeroPosition(arrIndex, elementIndex, arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arrIndexAcces = arr[i].arrIndex;
+        // console.log(arrIndexAcces);
+        elementIndexAccess = arr[i].elementIndex;
+        // console.log(elementIndexAccess);
+        if (elementIndexAccess === elementIndex && arrIndexAcces === arrIndex) {
+          return [arr[i - 1], (i - 1)]
+        }
+      }
+    }
+
+  }
 }
 
 // The file has newlines at the end of each line,
@@ -144,8 +232,10 @@ var boardString = fs.readFileSync('set-01_sample.unsolved.txt')
 var game = new Sudoku(boardString);
 
 // Remember: this will just fill out what it can and not "guess"
-game.solve();
 
-console.log(game.board());
+game.board()
+console.log(game.solve());
+
+// console.log(game.board());
 
 // console.log(boardString);
