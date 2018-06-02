@@ -6,7 +6,7 @@ class Sudoku {
     this.cols = 9
   }
 
-  checkRows() {
+  checkRows(i) {
     var selectedRow = game.board()[0]
     var selectRow = selectedRow.slice(0)
     var selectionRow = []
@@ -26,7 +26,7 @@ class Sudoku {
             if (idxNumAngka === -1 && idxNumSelection === -1) {
               state = false
               selectionRow.push(number[j])
-              var j = number.length
+              j = number.length
               // debugger;
             }
           }
@@ -34,15 +34,16 @@ class Sudoku {
       }
     }
     // console.log('number', number)
-    console.log('index: ', selectRow)
-    console.log('select', selectionRow)
+    // console.log('index: ', selectRow)
+    // console.log('select', selectionRow)
+    return selectionRow
   }
 
-  checkCols () {
+  checkCols (i) {
     var mainBoard = game.board()
     var selectedCols = []
     for (let k = 0; k < mainBoard.length; k++) {
-      selectedCols.push(mainBoard[k][0])
+      selectedCols.push(mainBoard[k][i])
     }
     // console.log('this colomn: ', selectedCols)
     var selectionCols = []
@@ -62,7 +63,7 @@ class Sudoku {
             if (idxNumAngka === -1 && idxNumSelection === -1) {
               state = false
               selectionCols.push(number[j])
-              var j = number.length
+              j = number.length
               // debugger;
             }
           }
@@ -70,51 +71,74 @@ class Sudoku {
       }
     }
     // console.log('number', number)
-    console.log('index: ', selectedCols)
-    console.log('select', selectionCols)
+    // console.log('index: ', selectedCols)
+    // console.log('select', selectionCols)
+    return selectionCols
   }
 
-  checkSquare () {
-    var mainBoard = game.board()
-    var selectedSquare = []
-    for(let i = 0; i < 3; i++) {
-      debugger
-      for(let j = 0; j < 3; j++) {
-        debugger
-        selectedSquare.push(mainBoard[i][j])
-      }
+  checkSquare (numRow) {
+    //buat j dinamis dengan cara looping kelipatan 3
+    // buat i dinamis dengan cara looping kelipatan 3
+    var startSquarePos = {
+      kotakSatu: [0, 0],
+      kotakDua: [0, 3],
+      kotakTiga: [0, 6],
+      kotakEmpat: [3, 0],
+      kotakLima: [3, 3],
+      kotakEnam: [3, 6],
+      kotakTujuh: [6, 0],
+      kotakDelapan: [6, 3],
+      kotakSembilan: [6, 6]
     }
-    // console.log('this colomn: ', selectedCols)
-    var selectionSquare = []
-    var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-    for (let i = 0; i < selectedSquare.length; i++) {
-      var state = true
-      if (selectedSquare[i] !== '0') {
-        selectionSquare.push(selectedSquare[i])
-        // debugger;
-      } else {
-        while (state) {
+    var mainBoard = game.board()
+    var containSelect = []
+    // console.log(startSquarePos.kotakDua[1])
+    for (var key in startSquarePos) {
+      var subContainSquare = []
+      for(let i = startSquarePos[key][0]; i < 3+startSquarePos[key][0]; i++) {
+        debugger
+        for(let j = startSquarePos[key][1]; j < 3+startSquarePos[key][1]; j++) {
+          debugger
+          subContainSquare.push(mainBoard[i][j])
+        }
+      }
+      containSelect.push(subContainSquare)
+    }
+      // console.log(containSelect)
+      // console.log('this colomn: ', selectedCols)
+      var selectionSquare = [] 
+      var selectedSquare = containSelect[numRow]
+      var number = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+      for (let i = 0; i < selectedSquare.length; i++) {
+        var state = true
+        if (selectedSquare[i] !== '0') {
+          selectionSquare.push(selectedSquare[i])
           // debugger;
-          for (var j = 0; j < number.length; j++) {
-            var idxNumAngka = selectedSquare.indexOf(number[j])
-            var idxNumSelection = selectionSquare.indexOf(number[j])
+        } else {
+          while (state) {
             // debugger;
-            if (idxNumAngka === -1 && idxNumSelection === -1) {
-              state = false
-              selectionSquare.push(number[j])
-              var j = number.length
+            for (var j = 0; j < number.length; j++) {
+              var idxNumAngka = selectedSquare.indexOf(number[j])
+              var idxNumSelection = selectionSquare.indexOf(number[j])
               // debugger;
+              if (idxNumAngka === -1 && idxNumSelection === -1) {
+                state = false
+                selectionSquare.push(number[j])
+                j = number.length
+                // debugger;
+              }
             }
           }
         }
       }
-    }
-    console.log(selectedSquare);
-    console.log(selectionSquare);
+      return selectionSquare
   }
 
   solve() {
-    // var 
+    var mainBoard = game.board()
+    for (let i = 0; i < 9; i++) {
+      console.log(this.checkSquare(i))
+    }
   }
 
   // Returns a string representing the current state of the board
@@ -150,6 +174,7 @@ game.solve()
 console.log(board_string);
 console.log('ini board:' + '\n', game.board());
 // console.log('ini solve:' + '\n', game.solve());
-console.log('ini check rows: ' + '\n', game.checkRows());
-console.log('ini check columns: ' + '\n', game.checkCols());
-console.log('ini check square: ' + '\n', game.checkSquare());
+// console.log('ini check rows: ' + '\n', game.checkRows());
+// console.log('ini check columns: ' + '\n', game.checkCols());
+// console.log('ini check square: ' + '\n', game.checkSquare());
+console.log('ini check solved: ' + '\n', game.solve());
