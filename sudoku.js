@@ -2,7 +2,7 @@
 
 class Sudoku {
   constructor(board_string) {
-    this.boardArr = this.strtoArr(board_string);
+    this.mainBoardArr = this.strtoArr(board_string);
     
   }
   
@@ -13,12 +13,12 @@ class Sudoku {
     var index = 0;
     while (index <= str.length) {
       if ((index+1) % 9 === 0) {
-        rowBoard.push(str[index]);
+        rowBoard.push(Number(str[index])); //penyebab utama ga jalan, lupa ngubah string jadi number..
         mainBoard.push(rowBoard);
         rowBoard = [];
       }
       else {
-        rowBoard.push(str[index]);
+        rowBoard.push(Number(str[index])); //penyebab utama ga jalan, lupa ngubah string jadi number..
       }
       index++;
     }
@@ -29,25 +29,21 @@ class Sudoku {
   //pengecekan release 1, 2, dan 3 dibuat input nya sama agar dapat dilakukan secara simultan
   rowCheck (boardArr, row, column, value) {
     for (var i = 0; i <= boardArr.length - 1; i++) {
-      if (i !== column) {
-        if (boardArr[row][i] === value) {
+      if (i !== column && boardArr[row][i] === value) { //dia tidak cek diri sendiri
           return false;
         }
       }
-    }
     return true;
   }
 
   //release 2 - vertical check
   //pengecekan release 1, 2, dan 3 dibuat input nya sama agar dapat dilakukan secara simultan
   columnCheck (boardArr, row, column, value) {
-    for (var i = 0; i <= boardArr.length - 1; i++) {
-      if (i !== row) {
-        if (boardArr[i][column] === value) {
+    for (var i = 0; i <= boardArr.length - 1 ; i++) {
+      if (i !== row && boardArr[i][column] === value) { //dia tidak cek diri sendiri
           return false;
         }
       }
-    }
     return true;
   }
   
@@ -114,8 +110,8 @@ class Sudoku {
       indexRow = 6;
       indexColumn = 6;
     }
-    for (var k = row; k < indexRow + 3; k++) {
-      for (var l = column; l < indexColumn + 3; l++) {
+    for (var k = indexRow; k < indexRow + 3; k++) { //sebelumnya ga fokus, salah nulis k = '' nya apa gitu.
+      for (var l = indexColumn; l < indexColumn + 3; l++) { //sebelumnya ga fokus, salah nulis l = '' nya apa gitu.
         if (k !== row && l !== column && boardArr[k][l] === value) {
           return false;
         }
@@ -124,20 +120,68 @@ class Sudoku {
     return true;
   }
   
-  checkSimultan(boardArr, row, column, value) {
-    if (this.rowCheck(boardArr, row, column, value) === true && this.columnCheck(boardArr, row, column, value) === true && this.blockSquareCheck(boardArr, row, column, value) === true) {
+  checkSimultan(board, row, column, value) {
+    if (this.rowCheck(board,row,column,value) === true && this.columnCheck(board,row,column,value) === true && this.blockSquareCheck(board,row,column,value === true) ) {
       return true;
+    } else return false;
+  }
+
+  locateIndexValueZero () {
+    for (var i = 0; i < 9; i++) {
+      for (var j = 0; j < 9; j++) {
+        if (this.mainBoardArr[i][j] === 0) {
+          return [i, j];
+        }
+      }
     }
-    return false;
+    return "sudokuBoardFull"
   }
 
   solve() {
-  
+    var zeroValue = this.locateIndexValueZero();
+    var rowZeroValue = zeroValue[0];
+    var columnZeroValue = zeroValue[1];
+
+    if (zeroValue === "sudokuBoardFull") {
+      return true;
+    }
+    for (var angka = 1; angka <= 9; angka++) { //parent number
+      if (this.checkSimultan(this.mainBoardArr, rowZeroValue, columnZeroValue, angka) === true) {
+        this.mainBoardArr[rowZeroValue][columnZeroValue] = angka;
+        if (this.solve() === true) {
+          return true;
+        }
+        this.mainBoardArr[rowZeroValue][columnZeroValue] = 0;
+      }
+    }
+    return false;  
+    
   }
     
 
   // Returns a string representing the current state of the board
-  board() {}
+  board() {
+    // console.log()
+    var printBoard = '';
+    for (var i = 0; i <= this.mainBoardArr.length - 1; i++) {
+      for (var j = 0; j <= this.mainBoardArr.length - 1; j++) {
+        if (j === 2 || j === 5 || j === this.mainBoardArr.length - 1) {
+          printBoard = printBoard + `${this.mainBoardArr[i][j]} | `;
+        }
+        else {
+          printBoard = printBoard + `${this.mainBoardArr[i][j]} `;
+        }
+      }
+      if (i === 2 || i === 5 || i === this.mainBoardArr.length - 1) {
+        printBoard = printBoard + '\n' + '-----------------------' + '\n';
+      }
+      else {
+        printBoard = printBoard + '\n';
+        
+      }
+    }
+    return printBoard
+  }
 }
 
 // The file has newlines at the end of each line,
@@ -148,8 +192,11 @@ var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .split("\n")[0]
 
 var game = new Sudoku(board_string)
-console.log(game)
+// console.log(game)
 // Remember: this will just fill out what it can and not "guess"
-console.log(game.solve())
+var run = game.solve()
+if (run === true) {
+  console.log('\nAkhirnya jalan................ \n')
+} else console.log('mabuk stuck')
 
 console.log(game.board())
