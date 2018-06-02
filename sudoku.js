@@ -68,14 +68,43 @@ class Sudoku {
 
   solve() {
     let board = this.boardArr;
-    let zeroCoord = this.zeroCoord;
+    let backtrack = this.zeroCoord;
     let number = 0;
     let isSolved = false;
+
+    let index = 0;
+    while(index < backtrack.length) {
+      let row = backtrack[index][0];
+      let col = backtrack[index][1];
+      number = board[row][col];
+      isSolved = false;
+
+      while(isSolved === false && number <= 9) {
+        if (this.checkNumber(board, number, row, col)) {
+          board[row][col] = number;
+          isSolved = true;
+        } else {
+          number++;
+        }
+      }
+
+      if (isSolved === false) {
+        board[row][col] = 0;
+        index--;
+      } else { index++ }
+    }
+
+    this.boardArr = board;
+    console.log(this.boardArr);
   }
 
   // Returns a string representing the current state of the board
   board() {
-    let output = this.boardArr;
+    let output = '';
+    let boardArr = this.boardArr;
+    for (let i = 0; i < boardArr.length; i++) {
+      output += boardArr[i].join('');
+    }
     return output;
   }
 }
@@ -88,9 +117,9 @@ var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .split("\n")[0]
 
 var game = new Sudoku(board_string)
-console.log(game)
+// console.log(game)
 
 // Remember: this will just fill out what it can and not "guess"
-// game.solve()
+game.solve()
 
-// console.log(game.board())
+console.log(game.board())
