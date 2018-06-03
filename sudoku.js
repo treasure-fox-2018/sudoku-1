@@ -29,7 +29,7 @@ class Sudoku {
         printBoard += pembatas + '\n';
       }
       for (let j = 0; j < this.sudokuBoard.length; j++) {
-        if (j === 2 || j === 6) {
+        if (j === 2 || j === 5) {
           printBoard += ' ' + this.sudokuBoard[i][j] + ' |';
         }else {
           printBoard += ' ' + this.sudokuBoard[i][j] + ' ';
@@ -41,7 +41,38 @@ class Sudoku {
   }
 
   // buat method untuk cek horizontal
+  checkVertical(board,row,value){
+    for (let i = 0; i < board[row].length; i++) {
+      if (board[i][row] === value) {
+        return false
+      }
+    }
+    return true;
+  }
+  // buat method untuk cek vertical
+  checkHorizontal(board,column,value){
+    for (let i = 0; i < board.length; i++) {
+      if (board[column][i] === value) {
+        return false
+      }
+    }
+    return true;
+  }
 
+  //buat method untuk cek 3x3
+  check3x3(board,row,column,value){
+    
+  }
+  // buat method pengecekan jika value index = 0
+  check0value(){
+    for (let i = 0; i < 9; i++) {
+      for (let j = 0; j < 9; j++) {
+        if (this.sudokuBoard[i][j] === 0) {
+          return [i,j];
+        }
+      }
+    }
+  }
 
   solve() {}
 }
@@ -61,6 +92,8 @@ var game = new Sudoku(board_string)
 game.solve()
 
 console.log(game.board())
+// console.log(game.checkVertical(this.sudokuBoard,1,1));
+console.log(game.check0value());
 
 // buat method untuk ambil data angka sudoku di txt dan jadikan array 9x9 "LAYOUT AWAL" --> DONE
 // buat method untuk board --> DONE
